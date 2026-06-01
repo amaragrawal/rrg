@@ -1,0 +1,59 @@
+# RRG Project - Git Ignore File
+
+# Generated HTML outputs
+*.html
+rrg_*_workspace.html
+rrg_us_workspace.html
+rrg_india_workspace.html
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv
+
+# IDE specific files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pytest
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+
+# Data files (if any)
+*.csv
+*.xlsx
+data/
+cache/
+
+# Logs
+*.log
+
+# OS specific
+Thumbs.db
+desktop.ini
+
+# Temporary files
+*.tmp
+*.bak
+*.backup
