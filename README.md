@@ -10,7 +10,7 @@ A production-ready implementation of Julius de Kempenaer's Relative Rotation Gra
 
 ## 📋 Quick Start
 
-### Run RRG Analysis
+### Run Standard RRG Analysis
 ```bash
 cd C:\workplace\rrg
 python rrg-analysis.py
@@ -19,6 +19,18 @@ python rrg-analysis.py
 **Output:**
 - `rrg_us_workspace.html` - US market sectors analysis
 - `rrg_india_workspace.html` - India market sectors analysis
+
+### Run Custom RRG Analysis
+```bash
+# Analyze specific tickers with custom parameters
+python rrg_custom.py -t AAPL MSFT GOOGL NVDA -b SPY
+
+# Daily timeframe with custom window
+python rrg_custom.py -t XLK XLF XLV -b SPY --timeframe daily -w 20
+
+# Monthly analysis
+python rrg_custom.py -t AAPL MSFT GOOGL -b SPY --timeframe monthly
+```
 
 ### Run Tests
 ```bash
@@ -45,6 +57,12 @@ python test_rrg_validation.py
 - **Rotation Metrics** - Angle and velocity calculations
 - **Summary Tables** - Sortable tables with current positions
 
+### Custom Analysis (NEW!)
+- **Flexible Ticker Selection** - Analyze any combination of tickers
+- **Multiple Timeframes** - Daily, weekly, or monthly analysis
+- **Customizable Parameters** - Adjust WMA window and trail length
+- **Command-Line Interface** - Easy batch processing and automation
+
 ### Quality Assurance
 - **25 Validation Tests** - Comprehensive test suite with 100% pass rate
 - **Edge Case Handling** - Robust error handling for missing data
@@ -57,7 +75,8 @@ python test_rrg_validation.py
 
 ```
 C:\workplace\rrg\
-├── rrg-analysis.py                    # Main RRG analysis engine
+├── rrg-analysis.py                    # Standard market analysis engine
+├── rrg_custom.py                      # Custom RRG analysis tool (NEW!)
 ├── test_rrg_validation.py             # Comprehensive test suite
 ├── test_reference_comparison.py       # Cross-validation framework
 ├── rrg_us_workspace.html              # Generated US market analysis
@@ -84,6 +103,75 @@ pip install numpy pandas yfinance plotly
 - pandas >= 1.1.0
 - yfinance >= 0.1.63
 - plotly >= 5.0.0
+
+---
+
+## 🎛️ Custom RRG Tool
+
+The `rrg_custom.py` tool provides flexible analysis for any combination of tickers.
+
+### Command-Line Options
+
+```
+python rrg_custom.py [OPTIONS]
+
+Required Arguments:
+  -t, --tickers TICKER [TICKER ...]    Tickers to analyze
+  -b, --benchmark TICKER               Benchmark ticker
+
+Optional Arguments:
+  -w, --window WINDOW                  WMA smoothing window (default: 14)
+  --tail TAIL                          Trail length to display (default: 6)
+  --timeframe {daily,weekly,monthly}   Data timeframe (default: weekly)
+  -p, --period PERIOD                  Data period: 1y, 2y, 5y, 10y, max (default: 5y)
+  -o, --output FILE                    Output HTML filename (default: auto-generated)
+  --title TITLE                        Custom chart title
+  --no-browser                         Don't open browser after generation
+```
+
+### Timeframe Guidelines
+
+| Timeframe | Best For | Recommended Window | Data Period |
+|-----------|----------|-------------------|-------------|
+| **Daily** | Short-term trading | 20-30 | 1-2 years |
+| **Weekly** | Medium-term trends | 10-14 (standard) | 2-5 years |
+| **Monthly** | Long-term analysis | 6-12 | 5-10 years |
+
+### Examples by Use Case
+
+**Day Trading / Swing Trading:**
+```bash
+# Daily analysis with 30-period window
+python rrg_custom.py -t AAPL MSFT NVDA GOOGL AMD \
+    -b SPY --timeframe daily -w 30 --tail 15 -p 1y
+```
+
+**Position Trading:**
+```bash
+# Weekly analysis (standard)
+python rrg_custom.py -t XLK XLF XLV XLE XLI -b SPY
+```
+
+**Long-term Investing:**
+```bash
+# Monthly analysis over 10 years
+python rrg_custom.py -t VTI VEA VWO BND \
+    -b SPY --timeframe monthly -w 12 -p 10y
+```
+
+**Sector Rotation:**
+```bash
+# All 11 S&P sectors
+python rrg_custom.py -t XLK XLF XLV XLY XLC XLI XLP XLE XLB XLU XLRE \
+    -b SPY -o sector_rotation.html
+```
+
+**Crypto Portfolio:**
+```bash
+# Top cryptocurrencies vs S&P 500
+python rrg_custom.py -t BTC-USD ETH-USD BNB-USD ADA-USD SOL-USD \
+    -b ^GSPC -w 10
+```
 
 ---
 
@@ -185,14 +273,55 @@ For detailed testing information, see [README_TESTING.md](README_TESTING.md)
 
 ## 📈 Usage Examples
 
-### Basic Usage
+### Standard Market Analysis
 ```bash
-# Run analysis for both markets
+# Run analysis for both US and India markets
 python rrg-analysis.py
 
 # Open generated HTML files in browser
 # - rrg_us_workspace.html
 # - rrg_india_workspace.html
+```
+
+### Custom RRG Analysis
+
+**Basic Example:**
+```bash
+# Analyze tech stocks vs SPY (weekly data, default settings)
+python rrg_custom.py -t AAPL MSFT GOOGL NVDA AMD -b SPY
+```
+
+**Daily Timeframe:**
+```bash
+# Daily analysis with 20-period window and 10-period trail
+python rrg_custom.py -t AAPL MSFT GOOGL -b SPY \
+    --timeframe daily -w 20 --tail 10
+```
+
+**Monthly Timeframe:**
+```bash
+# Monthly analysis over 2 years
+python rrg_custom.py -t XLK XLF XLV XLE XLI -b SPY \
+    --timeframe monthly -p 2y
+```
+
+**Sector ETFs:**
+```bash
+# Analyze sector ETFs with custom output file
+python rrg_custom.py -t XLK XLF XLV XLY XLC XLI XLP XLE XLB XLU -b SPY \
+    -o my_sectors_rrg.html --title "My Custom Sector Analysis"
+```
+
+**Crypto Analysis:**
+```bash
+# Analyze cryptocurrencies with 10-period window
+python rrg_custom.py -t BTC-USD ETH-USD BNB-USD ADA-USD -b ^GSPC -w 10
+```
+
+**International Stocks:**
+```bash
+# Indian stocks vs Nifty 500
+python rrg_custom.py -t TCS.NS INFY.NS HDFCBANK.NS RELIANCE.NS -b ^CRSLDX
 ```
 
 ### Customizing Parameters
